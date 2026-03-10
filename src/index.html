@@ -3,11 +3,56 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="./logo.svg" />
-    <title>Bun + React</title>
+
+    <!-- SEO -->
+    <title>lofi.dev — Lofi Music Player</title>
+    <meta name="description" content="A beautifully crafted lofi music player. Stream lofi hip hop, chillhop, and study beats with ambient sound mixing, animated visuals, and a curated playlist." />
+    <meta name="keywords" content="lofi, lofi hip hop, chillhop, study music, ambient music, music player, beats to relax" />
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="lofi.dev" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="lofi.dev — Lofi Music Player" />
+    <meta property="og:description" content="Stream lofi hip hop and chillhop with beautiful animated visuals and ambient sound mixing." />
+    <meta property="og:site_name" content="lofi.dev" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="lofi.dev — Lofi Music Player" />
+    <meta name="twitter:description" content="Stream lofi hip hop and chillhop with beautiful animated visuals and ambient sound mixing." />
+
+    <!-- Theme -->
+    <meta name="theme-color" content="#0a0a14" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "lofi.dev",
+        "description": "Stream lofi hip hop and chillhop music with beautiful animated visuals and ambient sound mixing.",
+        "applicationCategory": "MusicApplication",
+        "operatingSystem": "All",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='28'>🎵</text></svg>" />
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://img.youtube.com" />
+
     <script type="module" src="./frontend.tsx" async></script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <p style="color:white;text-align:center;padding:2rem;">
+        lofi.dev requires JavaScript to run. Please enable JavaScript in your browser.
+      </p>
+    </noscript>
   </body>
 </html>
