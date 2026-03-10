@@ -3,75 +3,70 @@ import { X } from 'lucide-react';
 import { usePlayerStore } from '../../store/playerStore';
 import type { AmbientLayer } from '../../shared/types';
 
-function AmbientLayerRow({ layer }: { layer: AmbientLayer }) {
+function AmbientLayerTile({ layer }: { layer: AmbientLayer }) {
   const updateAmbientLayer = usePlayerStore((state) => state.updateAmbientLayer);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    if (!audioRef.current) {
-      const audio = new Audio(layer.audioPath);
-      audio.loop = true;
-      audio.volume = layer.volume;
-      audioRef.current = audio;
-    }
+    const audio = new Audio(layer.audioPath);
+    audio.loop = true;
+    audio.volume = layer.volume;
+    audioRef.current = audio;
+    return () => { audio.pause(); };
   }, []);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
     audio.volume = layer.volume;
-
-    if (layer.active) {
-      audio.play().catch(console.error);
-    } else {
-      audio.pause();
-    }
+    if (layer.active) audio.play().catch(() => {});
+    else audio.pause();
   }, [layer.active, layer.volume]);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      audioRef.current?.pause();
-    };
-  }, []);
-
   return (
-    <div className="flex items-center gap-3 py-2">
+    <div className="flex flex-col gap-2">
       <button
         onClick={() => updateAmbientLayer(layer.id, { active: !layer.active })}
-        className="flex items-center gap-2 flex-1 text-left transition-all duration-150"
+        className="flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl transition-all duration-200 relative overflow-hidden"
+        style={{
+          background: layer.active ? 'rgba(167,139,250,0.15)' : 'rgba(255,255,255,0.04)',
+          border: `1px solid ${layer.active ? 'rgba(167,139,250,0.4)' : 'rgba(255,255,255,0.07)'}`,
+          boxShadow: layer.active ? '0 0 16px rgba(167,139,250,0.2) inset' : 'none',
+        }}
       >
+        {/* Active glow ring */}
+        {layer.active && (
+          <div
+            className="absolute inset-0 rounded-xl pointer-events-none"
+            style={{
+              background: 'radial-gradient(ellipse at 50% 0%, rgba(167,139,250,0.25) 0%, transparent 70%)',
+            }}
+          />
+        )}
+        <span className="text-xl relative z-10">{layer.emoji}</span>
         <span
-          className="w-8 h-8 flex items-center justify-center rounded-lg text-base transition-all duration-150"
-          style={{
-            background: layer.active ? 'var(--accent-primary, rgba(139,92,246,0.25))' : 'rgba(255,255,255,0.06)',
-            border: `1px solid ${layer.active ? 'var(--accent-primary, rgba(139,92,246,0.4))' : 'rgba(255,255,255,0.08)'}`,
-          }}
-        >
-          {layer.emoji}
-        </span>
-        <span
-          className="text-sm"
-          style={{ color: layer.active ? 'rgba(240,234,248,0.9)' : 'rgba(240,234,248,0.5)' }}
+          className="text-xs font-medium relative z-10"
+          style={{ color: layer.active ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.4)' }}
         >
           {layer.name}
         </span>
       </button>
 
-      {layer.active && (
+      {/* Volume slider — always visible, dimmed when inactive */}
+      <div className="px-1" style={{ opacity: layer.active ? 1 : 0.25, transition: 'opacity 0.2s' }}>
         <input
           type="range"
           min={0}
           max={1}
-          step={0.01}
+          step={0.02}
           value={layer.volume}
+          disabled={!layer.active}
           onChange={(e) => updateAmbientLayer(layer.id, { volume: parseFloat(e.target.value) })}
-          className="w-20 accent-current"
-          style={{ accentColor: 'var(--accent-primary, #8b5cf6)' }}
+          className="w-full"
+          style={{ accentColor: '#a78bfa', cursor: layer.active ? 'pointer' : 'default' }}
           aria-label={`${layer.name} volume`}
         />
-      )}
+      </div>
     </div>
   );
 }
@@ -85,38 +80,41 @@ export function AmbientMixer() {
 
   return (
     <div
-      className="fixed bottom-[144px] right-4 z-50 w-64 rounded-2xl p-4"
+      className="fixed z-50 rounded-2xl p-4"
       style={{
-        background: 'rgba(12, 12, 22, 0.92)',
-        backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+        bottom: '128px',
+        right: '16px',
+        width: '280px',
+        background: 'rgba(8, 8, 18, 0.96)',
+        backdropFilter: 'blur(24px)',
+        border: '1px solid rgba(255,255,255,0.09)',
+        boxShadow: '0 24px 64px rgba(0,0,0,0.6)',
       }}
     >
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold" style={{ color: 'rgba(240,234,248,0.9)' }}>
-          Ambient Sounds
-        </h3>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h3 className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.92)' }}>
+            Ambient Mixer
+          </h3>
+          <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.35)' }}>
+            Layer sounds over your music
+          </p>
+        </div>
         <button
           onClick={toggleAmbient}
-          className="transition-colors duration-150"
-          style={{ color: 'rgba(240,234,248,0.4)' }}
+          className="w-7 h-7 flex items-center justify-center rounded-lg transition-colors"
+          style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.45)' }}
           aria-label="Close ambient mixer"
         >
-          <X size={16} />
+          <X size={14} />
         </button>
       </div>
 
-      <div
-        className="text-xs mb-3 px-2 py-1.5 rounded-lg"
-        style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(240,234,248,0.4)' }}
-      >
-        Layer ambient sounds with your music
-      </div>
-
-      <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+      {/* 3-column grid of tiles */}
+      <div className="grid grid-cols-3 gap-2">
         {ambientLayers.map((layer) => (
-          <AmbientLayerRow key={layer.id} layer={layer} />
+          <AmbientLayerTile key={layer.id} layer={layer} />
         ))}
       </div>
     </div>

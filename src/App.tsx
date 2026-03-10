@@ -6,13 +6,35 @@ import { useAudio } from './hooks/useAudio';
 import { useKeyboard } from './hooks/useKeyboard';
 
 import { AnimatedBackground } from './components/Background/AnimatedBackground';
+import { LofiScene } from './components/Scenes/LofiScene';
+import { ScenePicker } from './components/Scenes/ScenePicker';
 import { Player } from './components/Player/Player';
 import { Playlist } from './components/Playlist/Playlist';
 import { Search } from './components/Search/Search';
-import { AmbientMixer } from './components/AmbientMixer/AmbientMixer';
 
 import { Search as SearchIcon, Radio } from 'lucide-react';
 import type { Track } from './shared/types';
+
+function LogoMark() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="26" height="26" rx="7" fill="#111115" />
+      <rect width="26" height="26" rx="7" fill="url(#g)" fillOpacity="0.15" />
+      {/* Vinyl record */}
+      <circle cx="12" cy="13" r="8" stroke="rgba(255,255,255,0.18)" strokeWidth="1" fill="none" />
+      <circle cx="12" cy="13" r="5" stroke="rgba(255,255,255,0.1)" strokeWidth="1" fill="none" />
+      <circle cx="12" cy="13" r="2" fill="rgba(255,255,255,0.85)" />
+      {/* Sound bars */}
+      <rect x="21" y="10" width="2" height="6" rx="1" fill="rgba(255,255,255,0.7)" />
+      <rect x="18" y="12" width="2" height="4" rx="1" fill="rgba(255,255,255,0.4)" />
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#fff" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
 
 function NowPlayingHero() {
   const currentTrack = usePlayerStore((state) => state.currentTrack);
@@ -22,62 +44,51 @@ function NowPlayingHero() {
     return (
       <div className="flex flex-col items-center justify-center flex-1 gap-4">
         <div
-          className="w-40 h-40 rounded-3xl flex items-center justify-center"
-          style={{
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
-          }}
+          className="w-36 h-36 rounded-3xl flex items-center justify-center"
+          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
         >
-          <Radio size={48} style={{ color: 'rgba(240,234,248,0.2)' }} />
+          <Radio size={40} style={{ color: 'rgba(255,255,255,0.18)' }} />
         </div>
-        <p className="text-sm" style={{ color: 'rgba(240,234,248,0.35)' }}>
-          Select a track to start listening
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.3)' }}>
+          Select a track to start
         </p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center flex-1 gap-6 px-8">
-      {/* Large album art */}
+    <div className="flex flex-col items-center justify-center flex-1 gap-5 px-6">
+      {/* Album art */}
       <div
-        className="relative rounded-3xl overflow-hidden shadow-2xl transition-all duration-1000"
+        className="relative rounded-3xl overflow-hidden transition-all duration-700"
         style={{
-          width: 'min(300px, 60vw)',
-          height: 'min(300px, 60vw)',
-          boxShadow: `0 30px 100px var(--accent-primary, rgba(139,92,246,0.35)), 0 0 0 1px rgba(255,255,255,0.08)`,
+          width: 'min(280px, 72vw)',
+          height: 'min(280px, 72vw)',
+          boxShadow: status === 'playing'
+            ? '0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.07)'
+            : '0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)',
           transform: status === 'playing' ? 'scale(1)' : 'scale(0.96)',
         }}
       >
         <img
           src={`/api/thumbnail/${currentTrack.id}`}
           alt={currentTrack.title}
-          className="w-full h-full object-cover transition-all duration-700"
-          style={{ filter: status === 'playing' ? 'brightness(1)' : 'brightness(0.7)' }}
+          className="w-full h-full object-cover"
+          style={{ filter: status === 'playing' ? 'brightness(1)' : 'brightness(0.65)' }}
         />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.45))' }} />
 
-        {/* Subtle gradient overlay */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.4) 100%)',
-          }}
-        />
-
-        {/* Now playing bars indicator */}
+        {/* Animated bars when playing */}
         {status === 'playing' && (
-          <div
-            className="absolute bottom-3 right-3 flex items-end gap-0.5"
-            style={{ height: '16px' }}
-          >
-            {[1, 2, 3, 4].map((barIndex) => (
+          <div className="absolute bottom-3 right-3 flex items-end gap-0.5" style={{ height: '14px' }}>
+            {[1, 2, 3, 4].map((i) => (
               <div
-                key={barIndex}
-                className="w-1 rounded-full"
+                key={i}
+                className="w-[3px] rounded-full"
                 style={{
-                  background: 'white',
-                  animation: `nowPlayingBar ${0.6 + barIndex * 0.15}s ease-in-out infinite alternate`,
-                  height: `${40 + barIndex * 15}%`,
+                  background: 'rgba(255,255,255,0.85)',
+                  animation: `nowPlayingBar ${0.55 + i * 0.12}s ease-in-out infinite alternate`,
+                  height: `${35 + i * 16}%`,
                 }}
               />
             ))}
@@ -86,14 +97,14 @@ function NowPlayingHero() {
       </div>
 
       {/* Track info */}
-      <div className="text-center max-w-sm">
+      <div className="text-center max-w-xs w-full px-2">
         <h1
-          className="text-xl font-semibold leading-tight mb-1 line-clamp-2"
-          style={{ color: 'rgba(240,234,248,0.95)' }}
+          className="text-lg font-semibold leading-snug mb-1 line-clamp-2"
+          style={{ color: '#f5f5f7', letterSpacing: '-0.01em' }}
         >
           {currentTrack.title}
         </h1>
-        <p className="text-sm" style={{ color: 'rgba(240,234,248,0.5)' }}>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.42)' }}>
           {currentTrack.author}
         </p>
       </div>
@@ -109,94 +120,80 @@ export function App() {
   const { seek } = useAudio();
   useKeyboard(seek);
 
-  // Load initial lofi tracks on mount
   useEffect(() => {
     async function loadInitialTracks() {
       try {
         const response = await fetch('/api/popular');
         if (!response.ok) return;
         const tracks = await response.json() as Track[];
-        if (tracks.length > 0) {
-          setQueue(tracks, 0);
-        }
+        if (tracks.length > 0) setQueue(tracks, 0);
       } catch (err) {
         console.error('Failed to load initial tracks:', err);
       }
     }
-
     loadInitialTracks();
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ color: 'rgba(240,234,248,0.9)' }}>
-      {/* Animated background */}
+    <div className="min-h-screen flex flex-col">
       <AnimatedBackground />
+      <LofiScene />
 
       {/* Header */}
       <header
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-4"
+        className="fixed top-0 left-0 right-0 z-40 flex items-center gap-3 px-4 py-3"
         style={{
-          background: 'rgba(10, 10, 20, 0.6)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid rgba(255,255,255,0.05)',
+          background: 'rgba(12,12,15,0.8)',
+          backdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
         }}
       >
         {/* Logo */}
-        <div className="flex items-center gap-2">
-          <div
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-sm"
-            style={{
-              background: 'linear-gradient(135deg, var(--accent-primary, rgba(139,92,246,0.9)), var(--accent-secondary, rgba(219,39,119,0.7)))',
-            }}
-          >
-            🎵
-          </div>
-          <span className="font-semibold text-sm tracking-wide" style={{ color: 'rgba(240,234,248,0.9)' }}>
-            lofi.dev
+        <div className="flex items-center gap-2 shrink-0">
+          <LogoMark />
+          <span className="font-semibold text-sm tracking-tight" style={{ color: 'rgba(255,255,255,0.88)' }}>
+            lofi<span style={{ color: 'rgba(255,255,255,0.38)' }}>.dev</span>
           </span>
         </div>
 
-        {/* Search button */}
+        {/* Scene picker */}
+        <div className="flex-1 flex justify-center">
+          <ScenePicker />
+        </div>
+
+        {/* Search */}
         <button
           onClick={toggleSearch}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all duration-150 hover:bg-white/10"
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm transition-all duration-150 shrink-0"
           style={{
             background: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.09)',
-            color: 'rgba(240,234,248,0.6)',
+            border: '1px solid rgba(255,255,255,0.08)',
+            color: 'rgba(255,255,255,0.5)',
           }}
+          onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.1)')}
+          onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)')}
           aria-label="Search"
-          title="Search (/ or Ctrl+K)"
+          title="Search (/)"
         >
-          <SearchIcon size={14} />
-          <span className="hidden sm:inline">Search tracks</span>
-          <kbd
-            className="hidden sm:inline text-xs px-1 py-0.5 rounded"
-            style={{ background: 'rgba(255,255,255,0.08)', color: 'rgba(240,234,248,0.35)' }}
-          >
-            /
-          </kbd>
+          <SearchIcon size={13} />
+          <span className="hidden sm:inline text-xs">Search</span>
+          <kbd className="hidden sm:inline text-xs px-1 py-0.5 rounded" style={{ background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.28)', fontFamily: 'monospace' }}>/</kbd>
         </button>
       </header>
 
-      {/* Main content */}
+      {/* Main */}
       <main
-        className="flex flex-1 pt-16 pb-36"
-        style={{ marginRight: isPlaylistOpen ? '320px' : '0', transition: 'margin-right 0.3s ease' }}
+        className="flex flex-1 pt-14 pb-24 md:pb-32"
+        style={{
+          marginRight: isPlaylistOpen ? 'min(320px, 100vw)' : '0',
+          transition: 'margin-right 0.3s ease',
+        }}
       >
         <NowPlayingHero />
       </main>
 
-      {/* Sidebar playlist */}
       <Playlist />
-
-      {/* Bottom player bar */}
       <Player onSeek={seek} />
-
-      {/* Floating panels */}
-      <AmbientMixer />
-
-      {/* Search overlay */}
       <Search />
     </div>
   );

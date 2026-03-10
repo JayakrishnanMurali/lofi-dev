@@ -1,5 +1,14 @@
 import { create } from 'zustand';
-import type { Track, RepeatMode, PlayerStatus, AmbientLayer, DominantColors } from '../shared/types';
+import type { Track, RepeatMode, PlayerStatus, AmbientLayer, DominantColors, SceneType } from '../shared/types';
+
+function getDefaultScene(): SceneType {
+  const hour = new Date().getHours();
+  if (hour >= 6 && hour < 11) return 'cafe';
+  if (hour >= 11 && hour < 17) return 'forest';
+  if (hour >= 17 && hour < 20) return 'cafe';
+  if (hour >= 20 && hour < 23) return 'rain';
+  return 'night';
+}
 
 interface PlayerStore {
   // Track state
@@ -28,6 +37,8 @@ interface PlayerStore {
   // Visual state
   dominantColors: DominantColors;
   ambientLayers: AmbientLayer[];
+  currentScene: SceneType;
+  setScene: (scene: SceneType) => void;
 
   // Sleep timer
   sleepTimerMinutes: number | null;
@@ -102,7 +113,7 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
   shuffled: false,
   shuffledIndices: [],
 
-  isPlaylistOpen: true,
+  isPlaylistOpen: false,
   isAmbientOpen: false,
   isSearchOpen: false,
   searchQuery: '',
@@ -115,6 +126,8 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     tertiary: 'rgba(14, 165, 233, 0.3)',
   },
   ambientLayers: DEFAULT_AMBIENT_LAYERS,
+  currentScene: getDefaultScene(),
+  setScene: (scene) => set({ currentScene: scene }),
 
   sleepTimerMinutes: null,
   sleepTimerEndsAt: null,

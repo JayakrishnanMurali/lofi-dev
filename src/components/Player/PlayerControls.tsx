@@ -23,26 +23,36 @@ export function PlayerControls({ onSeek: _onSeek }: PlayerControlsProps) {
 
   const RepeatIcon = repeatMode === 'one' ? Repeat1 : Repeat;
 
+  // Active state: always white so it's visible regardless of accent color
+  const activeColor = 'rgba(255,255,255,0.95)';
+  const inactiveColor = 'rgba(255,255,255,0.38)';
+
   return (
     <div className="flex items-center gap-4">
       {/* Shuffle */}
       <button
         onClick={toggleShuffle}
         disabled={isDisabled}
-        className="transition-all duration-150 hover:scale-110 disabled:opacity-30"
-        style={{ color: shuffled ? 'var(--accent-primary, rgba(139,92,246,1))' : 'rgba(240,234,248,0.5)' }}
+        className="relative transition-all duration-150 hover:scale-110 disabled:opacity-25"
+        style={{ color: shuffled ? activeColor : inactiveColor }}
         aria-label="Toggle shuffle"
         title="Shuffle (Ctrl+S)"
       >
-        <Shuffle size={16} />
+        <Shuffle size={15} />
+        {shuffled && (
+          <span
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+            style={{ background: 'rgba(255,255,255,0.7)' }}
+          />
+        )}
       </button>
 
       {/* Previous */}
       <button
         onClick={playPrevious}
         disabled={isDisabled}
-        className="transition-all duration-150 hover:scale-110 disabled:opacity-30"
-        style={{ color: 'rgba(240,234,248,0.8)' }}
+        className="transition-all duration-150 hover:scale-110 hover:text-white disabled:opacity-25"
+        style={{ color: 'rgba(255,255,255,0.7)' }}
         aria-label="Previous track"
         title="Previous (Shift+←)"
       >
@@ -53,21 +63,22 @@ export function PlayerControls({ onSeek: _onSeek }: PlayerControlsProps) {
       <button
         onClick={() => issuePlaybackCommand(isPlaying ? 'pause' : 'play')}
         disabled={isDisabled || isLoading}
-        className="flex items-center justify-center w-11 h-11 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-30"
+        className="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-30"
         style={{
-          background: 'linear-gradient(135deg, var(--accent-primary, rgba(139,92,246,0.9)), var(--accent-secondary, rgba(219,39,119,0.7)))',
-          boxShadow: '0 0 20px var(--accent-primary, rgba(139,92,246,0.4))',
+          background: '#ffffff',
+          boxShadow: '0 0 20px rgba(255,255,255,0.15)',
+          color: '#0c0c0f',
           color: 'white',
         }}
         aria-label={isPlaying ? 'Pause' : 'Play'}
         title="Play/Pause (Space)"
       >
         {isLoading ? (
-          <Loader size={20} className="animate-spin" />
+          <Loader size={18} className="animate-spin" />
         ) : isPlaying ? (
-          <Pause size={20} fill="currentColor" />
+          <Pause size={18} fill="currentColor" />
         ) : (
-          <Play size={20} fill="currentColor" className="translate-x-0.5" />
+          <Play size={18} fill="currentColor" className="translate-x-px" />
         )}
       </button>
 
@@ -75,8 +86,8 @@ export function PlayerControls({ onSeek: _onSeek }: PlayerControlsProps) {
       <button
         onClick={playNext}
         disabled={isDisabled}
-        className="transition-all duration-150 hover:scale-110 disabled:opacity-30"
-        style={{ color: 'rgba(240,234,248,0.8)' }}
+        className="transition-all duration-150 hover:scale-110 hover:text-white disabled:opacity-25"
+        style={{ color: 'rgba(255,255,255,0.7)' }}
         aria-label="Next track"
         title="Next (Shift+→)"
       >
@@ -87,14 +98,18 @@ export function PlayerControls({ onSeek: _onSeek }: PlayerControlsProps) {
       <button
         onClick={toggleRepeat}
         disabled={isDisabled}
-        className="transition-all duration-150 hover:scale-110 disabled:opacity-30"
-        style={{
-          color: repeatMode !== 'none' ? 'var(--accent-primary, rgba(139,92,246,1))' : 'rgba(240,234,248,0.5)',
-        }}
+        className="relative transition-all duration-150 hover:scale-110 disabled:opacity-25"
+        style={{ color: repeatMode !== 'none' ? activeColor : inactiveColor }}
         aria-label="Toggle repeat"
         title="Repeat (Ctrl+R)"
       >
-        <RepeatIcon size={16} />
+        <RepeatIcon size={15} />
+        {repeatMode !== 'none' && (
+          <span
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+            style={{ background: 'rgba(255,255,255,0.7)' }}
+          />
+        )}
       </button>
     </div>
   );

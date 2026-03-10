@@ -46,7 +46,7 @@ export function ProgressBar({ onSeek }: ProgressBarProps) {
 
   return (
     <div className="w-full flex items-center gap-3 group">
-      <span className="text-xs tabular-nums" style={{ color: 'rgba(240,234,248,0.5)', minWidth: '2.5rem', textAlign: 'right' }}>
+      <span className="text-xs tabular-nums" style={{ color: 'rgba(255,255,255,0.55)', minWidth: '2.5rem', textAlign: 'right' }}>
         {formatDuration(currentTime)}
       </span>
 
@@ -63,7 +63,7 @@ export function ProgressBar({ onSeek }: ProgressBarProps) {
           className="absolute inset-y-0 left-0 rounded-full transition-all duration-75"
           style={{
             width: `${progressFraction * 100}%`,
-            background: 'linear-gradient(90deg, var(--accent-primary, rgba(139,92,246,0.9)), var(--accent-secondary, rgba(219,39,119,0.7)))',
+            background: 'rgba(255,255,255,0.88)',
           }}
         />
 
@@ -78,7 +78,7 @@ export function ProgressBar({ onSeek }: ProgressBarProps) {
         />
       </div>
 
-      <span className="text-xs tabular-nums" style={{ color: 'rgba(240,234,248,0.5)', minWidth: '2.5rem' }}>
+      <span className="text-xs tabular-nums" style={{ color: 'rgba(255,255,255,0.55)', minWidth: '2.5rem' }}>
         {formatDuration(duration)}
       </span>
     </div>

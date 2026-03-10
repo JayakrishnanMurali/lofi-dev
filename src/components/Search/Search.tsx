@@ -55,14 +55,12 @@ export function Search() {
   const searchQuery = usePlayerStore((state) => state.searchQuery);
   const searchResults = usePlayerStore((state) => state.searchResults);
   const isSearching = usePlayerStore((state) => state.isSearching);
-  const queue = usePlayerStore((state) => state.queue);
 
   const setSearchQuery = usePlayerStore((state) => state.setSearchQuery);
   const setSearchResults = usePlayerStore((state) => state.setSearchResults);
   const setIsSearching = usePlayerStore((state) => state.setIsSearching);
   const toggleSearch = usePlayerStore((state) => state.toggleSearch);
   const setQueue = usePlayerStore((state) => state.setQueue);
-  const addToQueue = usePlayerStore((state) => state.addToQueue);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -100,14 +98,13 @@ export function Search() {
     debounceTimerRef.current = setTimeout(() => performSearch(value), 400);
   }, [setSearchQuery, performSearch]);
 
+  // Load all results into the queue and start playing the selected track immediately
   const handleTrackSelect = useCallback((track: Track) => {
-    if (queue.length === 0) {
-      setQueue([track], 0);
-    } else {
-      addToQueue(track);
-    }
+    const allTracks = searchResults.length > 0 ? searchResults : [track];
+    const startIndex = allTracks.findIndex((t) => t.id === track.id);
+    setQueue(allTracks, startIndex >= 0 ? startIndex : 0);
     toggleSearch();
-  }, [queue.length, setQueue, addToQueue, toggleSearch]);
+  }, [searchResults, setQueue, toggleSearch]);
 
   const handlePlayAll = useCallback(() => {
     if (searchResults.length === 0) return;
@@ -172,9 +169,9 @@ export function Search() {
                 onClick={handlePlayAll}
                 className="text-xs px-3 py-1 rounded-full transition-all duration-150"
                 style={{
-                  background: 'var(--accent-primary, rgba(139,92,246,0.2))',
-                  color: 'var(--accent-primary, rgba(139,92,246,1))',
-                  border: '1px solid var(--accent-primary, rgba(139,92,246,0.3))',
+                  background: 'rgba(255,255,255,0.08)',
+                  color: 'rgba(255,255,255,0.82)',
+                  border: '1px solid rgba(255,255,255,0.12)',
                 }}
               >
                 Play all

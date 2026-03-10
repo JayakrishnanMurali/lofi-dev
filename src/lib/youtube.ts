@@ -47,7 +47,9 @@ function mapYouTubeVideoToTrack(item: any): Track {
 export async function searchTracks(query: string, maxResults = 20): Promise<Track[]> {
   const searchUrl = new URL(`${BASE_URL}/search`);
   searchUrl.searchParams.set('part', 'snippet');
-  searchUrl.searchParams.set('q', query);
+  // Always keep results within the lofi universe
+  const lofiQuery = /\blofi\b/i.test(query) ? query : `lofi ${query}`;
+  searchUrl.searchParams.set('q', lofiQuery);
   searchUrl.searchParams.set('type', 'video');
   searchUrl.searchParams.set('videoCategoryId', '10'); // Music category
   searchUrl.searchParams.set('maxResults', String(maxResults));
