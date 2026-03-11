@@ -1,4 +1,4 @@
-# lofi.dev
+# Lofies
 
 A minimal lofi music player with an animated ambient interface. Stream lofi tracks from YouTube, layer ambient sounds, and set the mood with dynamic scenes.
 

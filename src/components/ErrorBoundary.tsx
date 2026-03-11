@@ -20,7 +20,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('lofi.dev caught error:', error, info.componentStack);
+    console.error('Lofies caught error:', error, info.componentStack);
   }
 
   handleRefresh = () => {

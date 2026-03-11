@@ -23,7 +23,7 @@ async function fetchFromInvidious(path: string): Promise<Response> {
     try {
       const response = await fetch(`${baseUrl}${path}`, {
         signal: AbortSignal.timeout(8000),
-        headers: { 'User-Agent': 'LofiDev/1.0' },
+        headers: { 'User-Agent': 'Lofies/1.0' },
       });
 
       if (response.ok) {

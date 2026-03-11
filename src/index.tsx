@@ -96,4 +96,4 @@ const server = serve({
   },
 });
 
-console.log(`🎵 lofi.dev running at ${server.url}`);
+console.log(`🎵 Lofies running at ${server.url}`);
