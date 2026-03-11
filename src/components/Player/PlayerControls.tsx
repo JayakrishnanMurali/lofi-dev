@@ -68,7 +68,6 @@ export function PlayerControls({ onSeek: _onSeek }: PlayerControlsProps) {
           background: '#ffffff',
           boxShadow: '0 0 20px rgba(255,255,255,0.15)',
           color: '#0c0c0f',
-          color: 'white',
         }}
         aria-label={isPlaying ? 'Pause' : 'Play'}
         title="Play/Pause (Space)"

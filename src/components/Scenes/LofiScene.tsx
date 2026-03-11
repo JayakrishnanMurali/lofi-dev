@@ -330,7 +330,6 @@ function SnowScene() {
 
 const SCENE_COMPONENTS: Record<SceneType, React.ComponentType> = {
   rain: RainScene,
-  cafe: CafeScene,
   forest: ForestScene,
   night: NightCityScene,
   snow: SnowScene,

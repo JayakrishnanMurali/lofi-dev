@@ -8,6 +8,7 @@ import { useKeyboard } from './hooks/useKeyboard';
 import { AnimatedBackground } from './components/Background/AnimatedBackground';
 import { LofiScene } from './components/Scenes/LofiScene';
 import { ScenePicker } from './components/Scenes/ScenePicker';
+
 import { Player } from './components/Player/Player';
 import { Playlist } from './components/Playlist/Playlist';
 import { Search } from './components/Search/Search';
@@ -156,11 +157,6 @@ export function App() {
           </span>
         </div>
 
-        {/* Scene picker */}
-        <div className="flex-1 flex justify-center">
-          <ScenePicker />
-        </div>
-
         {/* Search */}
         <button
           onClick={toggleSearch}
@@ -193,6 +189,7 @@ export function App() {
       </main>
 
       <Playlist />
+      <ScenePicker />
       <Player onSeek={seek} />
       <Search />
     </div>

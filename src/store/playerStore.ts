@@ -1,13 +1,18 @@
 import { create } from 'zustand';
 import type { Track, RepeatMode, PlayerStatus, AmbientLayer, DominantColors, SceneType } from '../shared/types';
 
-function getDefaultScene(): SceneType {
-  const hour = new Date().getHours();
-  if (hour >= 6 && hour < 11) return 'cafe';
-  if (hour >= 11 && hour < 17) return 'forest';
-  if (hour >= 17 && hour < 20) return 'cafe';
-  if (hour >= 20 && hour < 23) return 'rain';
-  return 'night';
+function loadFavorites(): Track[] {
+  try {
+    return JSON.parse(localStorage.getItem('lofi-favorites') ?? '[]');
+  } catch {
+    return [];
+  }
+}
+
+function saveFavorites(favorites: Track[]) {
+  try {
+    localStorage.setItem('lofi-favorites', JSON.stringify(favorites));
+  } catch {}
 }
 
 interface PlayerStore {
@@ -39,6 +44,11 @@ interface PlayerStore {
   ambientLayers: AmbientLayer[];
   currentScene: SceneType;
   setScene: (scene: SceneType) => void;
+
+  // Favorites
+  favorites: Track[];
+  toggleFavorite: (track: Track) => void;
+  isFavorite: (trackId: string) => boolean;
 
   // Sleep timer
   sleepTimerMinutes: number | null;
@@ -126,8 +136,20 @@ export const usePlayerStore = create<PlayerStore>((set, get) => ({
     tertiary: 'rgba(14, 165, 233, 0.3)',
   },
   ambientLayers: DEFAULT_AMBIENT_LAYERS,
-  currentScene: getDefaultScene(),
+  currentScene: 'snow',
   setScene: (scene) => set({ currentScene: scene }),
+
+  favorites: loadFavorites(),
+  toggleFavorite: (track) =>
+    set((state) => {
+      const exists = state.favorites.some((f) => f.id === track.id);
+      const updated = exists
+        ? state.favorites.filter((f) => f.id !== track.id)
+        : [...state.favorites, track];
+      saveFavorites(updated);
+      return { favorites: updated };
+    }),
+  isFavorite: (trackId) => usePlayerStore.getState().favorites.some((f) => f.id === trackId),
 
   sleepTimerMinutes: null,
   sleepTimerEndsAt: null,

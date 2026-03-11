@@ -23,7 +23,7 @@ export interface StreamInfo {
 }
 
 export type RepeatMode = 'none' | 'one' | 'all';
-export type SceneType = 'rain' | 'cafe' | 'forest' | 'night' | 'snow';
+export type SceneType = 'rain' | 'forest' | 'night' | 'snow';
 export type PlayerStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'error';
 
 export interface AmbientLayer {
