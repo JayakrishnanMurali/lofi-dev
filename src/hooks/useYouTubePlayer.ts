@@ -36,6 +36,7 @@ interface YTPlayerInstance {
   seekTo(seconds: number, allowSeekAhead: boolean): void;
   setVolume(volume: number): void;
   loadVideoById(videoId: string): void;
+  cueVideoById(videoId: string): void;
   getCurrentTime(): number;
   getDuration(): number;
   getPlayerState(): number;
@@ -121,7 +122,11 @@ export function useYouTubePlayer(): UseYouTubePlayerReturn {
             const pending = pendingVideoIdRef.current;
             if (pending) {
               pendingVideoIdRef.current = null;
-              target.loadVideoById(pending);
+              // Use cueVideoById instead of loadVideoById — browsers block autoplay
+              // on initial page load before any user interaction. cueVideoById prepares
+              // the video without attempting autoplay, avoiding the infinite loading state.
+              target.cueVideoById(pending);
+              setStatus('paused');
             }
           },
 
