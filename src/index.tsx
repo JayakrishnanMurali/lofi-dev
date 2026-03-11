@@ -3,6 +3,7 @@ import index from './index.html';
 import { searchTracks, getPopularLofiTracks, getVideoDetails } from './lib/youtube';
 
 const server = serve({
+  port: Number(process.env.PORT) || 3000,
   routes: {
     '/*': index,
 
