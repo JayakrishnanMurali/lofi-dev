@@ -1,13 +1,11 @@
 import posthog from 'posthog-js';
 
-const posthogKey = process.env.POSTHOG_KEY;
-const posthogHost = process.env.POSTHOG_HOST;
+const POSTHOG_KEY = 'phc_IdyvfdGDHmrMt9bfQBAa8Eo2s7dDiebwATxYkedBQA3';
+const POSTHOG_HOST = 'https://us.i.posthog.com';
 
 export function initAnalytics() {
-  if (!posthogKey) return;
-
-  posthog.init(posthogKey, {
-    api_host: posthogHost ?? 'https://us.i.posthog.com',
+  posthog.init(POSTHOG_KEY, {
+    api_host: POSTHOG_HOST,
     person_profiles: 'identified_only',
   });
 }
